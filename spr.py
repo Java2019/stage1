@@ -1,15 +1,48 @@
 import os
+import speech_recognition as sr
+import sys
+import webbrowser
 
 
 def talk(words):
-    # engine = pyttsx3.Engine
-    # voices = engine.getProperty(__name__)
-    # for voice in voices:
-    #     engine.setProperty('voice', voice.id)
-    # engine.say('The quick brown fox jumped over the lazy dog.')
-    # engine.runAndWait()
-    # os.say("Hi, this is the Awesome Weather Service...", {"voice":"kate"})
-    os.system("echo " + words + "| RHVoice-test -p Elena")
+     os.system("echo " + words + "| RHVoice-test -p Elena")
 
 
-talk("Список голосовых профилей")
+def comand():
+    r = sr.Recognizer()
+
+    with sr.Microphone() as source:
+        # r.pause_threshold = 1
+        r.adjust_for_ambient_noise(source, duration=1)
+        audio = r.listen(source)
+    try:
+        task = r.recognize_google(audio, language='ru_RU').lower()
+        print(task)
+    except sr.UnknownValueError:
+        # talk('Я вас не поняла.')
+        task = comand()
+    return task
+
+
+def makesomthing(task: str):
+    if 'открой сайт' in task:
+        sitename = task.partition('открой сайт')[2].strip()
+        url = 'http://' + sitename
+        webbrowser.open(url)
+    elif 'стоп' in task:
+        sys.exit()
+    elif 'привет' in task:
+        talk('привет')
+    elif 'проверить почту' in task:
+        url = 'https://mail.yandex.ru/?uid=13617957#inbox'
+        webbrowser.open(url)
+    elif 'facebook' in task:
+        url = 'https://facebook.com'
+        webbrowser.open(url)
+    elif 'skype' in task:
+        url = 'https://web.skype.com/'
+        webbrowser.open(url)
+
+
+while True:
+    makesomthing(comand())
