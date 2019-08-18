@@ -42,7 +42,10 @@ def makesomthing(task: str):
     elif 'skype' in task:
         url = 'https://web.skype.com/'
         webbrowser.open(url)
-
+    elif 'пока' in task:
+        talk('пока')
+    elif 'спокойной ночи' in task:
+        talk('спокойной ночи')
 
 while True:
     makesomthing(comand())
